@@ -6,45 +6,49 @@ const App = require("./app");
 const system = {};
 
 const server = async () => {
-    await start();
+  await start();
 };
 
 async function onExit(reason) {
-    if (!system.appStarted) {
-        console.warn(`stopping system before the application had finished starting`);
-        return process.exit(reason);
-    }
+  if (!system.appStarted) {
+    console.warn(
+      `stopping system before the application had finished starting`
+    );
+    return process.exit(reason);
+  }
 }
 
 const start = async () => {
-    process.on("exit", onExit);
+  process.on("exit", onExit);
 
-    system.mesh = new Mesh();
-    system.container = new Container(system.mesh);
-    system.app = new App();
+  system.mesh = new Mesh();
+  system.container = new Container(system.mesh);
+  system.app = new App();
 
-    return system.mesh.initialize(config, (err) => {
-        if (err) {
-            console.error(err.stack || err.toString());
-            process.exit(1);
-        }
+  return system.mesh.initialize(config, async (err) => {
+    if (err) {
+      console.error(err.stack || err.toString());
+      process.exit(1);
+    }
 
-        // set up dependencies - assign to global variable to remain in scope for application lifetime
-        system.deps = system.container.registerDependencies();
+    // set up dependencies - assign to global variable to remain in scope for application lifetime
+    system.deps = system.container.registerDependencies();
 
-        system.mesh.start(async (err) => {
-            if (err) {
-                console.error(err.stack || err.toString());
-                process.exit(2);
-            }
-            // start the main app
-            await system.app.start(system.deps);
-            system.appStarted = true;
+    try {
+      //start the mesh
+      await system.mesh.start();
 
-            // initialise the client facade
-            // await system.mesh.exchange.clientFacade.initialise(system.deps);
-        });
-    });
+      // start the main app
+      await system.app.start(system.deps);
+      system.appStarted = true;
+
+      // initialise the client facade
+      await system.mesh.exchange.clientFacade.initialise(system.deps);
+    } catch (err) {
+      console.error(err.stack || err.toString());
+      process.exit(2);
+    }
+  });
 };
 
 server();

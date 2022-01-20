@@ -2,7 +2,7 @@
   "name": "happner-demo-server",
   "version": "0.0.1",
   "description": "",
-  "main": "happner-demo-server/index.js",
+  "main": "happner-demo-server/server.js",
   "scripts": {
     "test": "echo \\\\\\\"Error: no happner-demo-server/test specified\\\\\\\" && exit 1"
   },
@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/happner/happner-demo-app#readme",
   "dependencies": {
-    "happner": "^1.34.1"
+    "happner-2": "^11.16.1"
   }
 }

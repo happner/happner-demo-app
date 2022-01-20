@@ -1,20 +1,21 @@
-module.exports = class ClientFacade {
+const BaseFacade = require("./base-facade");
+
+module.exports = class ClientFacade { //extends BaseFacade {
+
     constructor() {
+        // super();
     }
 
-    initialise(dependencies) {
+    static create() {
+        return new ClientFacade();
+    }
+
+    async initialise(dependencies) {
+        this.dependencies = dependencies;
     }
 
     /* Methods exposed to the outside world... */
-    async sendMessage(userName, msg) {
-
-    }
-
-    async subscribeToUserMessages(userName) {
-        
-    }
-
-    async unSubscribeToUserMessages(userName) {
-
+    async sendMessage(user, msg) {
+        console.log(`Message ${msg} received for ${user}!`);
     }
 }
