@@ -4,10 +4,10 @@
   "description": "Demo app with suggested best-practice architecture",
   "main": "happner-demo-server/server.js",
   "scripts": {
-    "test": "echo \\\\\\\"Error: no happner-demo-server/test specified\\\\\\\" && exit 1"
+    "test": "mocha **/test/unit/**"
   },
   "repository": {
-    "type": "git",
+    "type": "git",s
     "url": "git+https://github.com/happner/happner-demo-app.git"
   },
   "author": "leebow",
