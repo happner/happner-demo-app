@@ -1,7 +1,7 @@
 {
-  "name": "happner-demo-app",
+  "name": "happner-demo-server",
   "version": "0.0.1",
-  "description": "Demo app with suggested best-practice architecture",
+  "description": "",
   "main": "happner-demo-server/index.js",
   "scripts": {
     "test": "echo \\\\\\\"Error: no happner-demo-server/test specified\\\\\\\" && exit 1"
@@ -15,9 +15,5 @@
   "bugs": {
     "url": "https://github.com/happner/happner-demo-app/issues"
   },
-  "homepage": "https://github.com/happner/happner-demo-app#readme",
-  "workspaces": [
-    "happner-demo-client",
-    "happner-demo-server"
-  ]
+  "homepage": "https://github.com/happner/happner-demo-app#readme"
 }

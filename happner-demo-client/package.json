@@ -1,0 +1,19 @@
+{
+  "name": "happner-demo-client",
+  "version": "0.0.1",
+  "description": "",
+  "main": "happner-demo-client/index.js",
+  "scripts": {
+    "test": "echo \\\\\\\"Error: no happner-demo-client/test specified\\\\\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/happner/happner-demo-app.git"
+  },
+  "author": "leebow",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/happner/happner-demo-app/issues"
+  },
+  "homepage": "https://github.com/happner/happner-demo-app#readme"
+}

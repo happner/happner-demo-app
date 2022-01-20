@@ -1,5 +1,8 @@
 # happner-demo-app
-A template demonstrating the suggested architecture and patterns to use in a typical Happner real-time application
+A monorepo demonstrating the suggested architecture and patterns to use in a typical Happner real-time application.
+
+The application is a very simple chat app, where users can open a basic client and communicate with each other via the
+Happner mesh.
 
 ## Project goals
 
