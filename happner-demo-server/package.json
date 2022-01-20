@@ -4,7 +4,9 @@
   "description": "",
   "main": "happner-demo-server/server.js",
   "scripts": {
-    "test": "echo \\\\\\\"Error: no happner-demo-server/test specified\\\\\\\" && exit 1"
+    "test": "mocha test/**/**",
+    "lint": "eslint '**/*.js'",
+    "lint-fix": "eslint '**/*.js' --fix"
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,21 @@
   "homepage": "https://github.com/happner/happner-demo-app#readme",
   "dependencies": {
     "happner-2": "^11.16.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "chai": "^4.3.4",
+    "chai-match": "^1.1.1",
+    "dotenv": "^10.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "expect.js": "^0.3.1",
+    "mocha": "^9.0.3",
+    "nyc": "^15.1.0",
+    "pre-commit": "^1.2.2",
+    "prettier": "^2.4.1",
+    "sinon": "^11.1.2",
+    "sinon-chai": "^3.7.0"
   }
 }

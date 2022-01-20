@@ -1,1 +1,1 @@
-module.exports = class EventBus{}
+module.exports = class EventBus {};

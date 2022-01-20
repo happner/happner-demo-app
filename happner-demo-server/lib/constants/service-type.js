@@ -1,4 +1,4 @@
 module.exports = {
-    EVENT: "event",
-    COMPONENT: "component",
+	EVENT: "event",
+	COMPONENT: "component",
 };
