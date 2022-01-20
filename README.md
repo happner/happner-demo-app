@@ -24,3 +24,14 @@ To illustrate the following:
 - TDD (test-driven development)
   - unit/integration/functional tests
   - mocking/stubbing
+
+## The server (happner-demo-server)
+
+- entry point: ./server.js (to start the server, run `node server.js`)
+- dependency graph setup: ./container.js
+- configuration: ./config.js
+- application root: ./app.js
+
+## The client (happner-demo-client)
+
+TODO

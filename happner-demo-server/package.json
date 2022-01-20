@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/happner/happner-demo-app/issues"
   },
-  "homepage": "https://github.com/happner/happner-demo-app#readme"
+  "homepage": "https://github.com/happner/happner-demo-app#readme",
+  "dependencies": {
+    "happner": "^1.34.1"
+  }
 }
