@@ -7,7 +7,7 @@
     "test": "mocha **/test/unit/**"
   },
   "repository": {
-    "type": "git",s
+    "type": "git",
     "url": "git+https://github.com/happner/happner-demo-app.git"
   },
   "author": "leebow",
