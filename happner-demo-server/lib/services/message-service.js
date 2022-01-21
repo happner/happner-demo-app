@@ -1,19 +1,21 @@
+const EventSources = require("../constants/event-sources");
+
 module.exports = class MessageService {
 	#meshGateway;
+	#messageBuilder;
 	#messageRepository;
 
-	constructor(meshGateway, messageRepository) {
+	constructor(meshGateway, messageBuilder, messageRepository) {
 		this.#meshGateway = meshGateway;
+		this.#messageBuilder = messageBuilder;
 		this.#messageRepository = messageRepository;
 	}
 
-	async sendMessage(user, msg) {
-		let msgObj = { user: user, msg: msg, createdAt: Date.now() };
-		let path = `users/${user}/messages/${msgObj.timeStamp}`;
+	async sendMessage(userName, message) {
+		let msgObj = this.#messageBuilder.withMessageText(message).withUsername(userName).build();
+		let path = `users/${userName}/messages/${msgObj.createdAt}`;
 
 		await this.#messageRepository.set(msgObj);
-
-		console.log(`Emitting message: ${JSON.stringify(msgObj)}; path: ${path}`);
-		await this.#meshGateway.emitToEventBus("MESSAGE_EVENT", path, msgObj);
+		await this.#meshGateway.emitToEventBus(EventSources.MESSAGE_EVENT, path, msgObj);
 	}
 };
