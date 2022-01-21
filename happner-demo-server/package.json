@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "happner-demo-server/server.js",
+  "private": true,
   "scripts": {
     "test": "mocha test/**/**",
     "lint": "eslint '**/*.js'",

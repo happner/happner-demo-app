@@ -23,30 +23,25 @@ const start = async () => {
 	system.container = new Container(system.mesh);
 	system.app = new App();
 
-	return system.mesh.initialize(config, async (err) => {
-		if (err) {
-			console.error(err.stack || err.toString());
-			process.exit(1);
-		}
+	try {
+		await system.mesh.initialize(config);
+
+		//start the mesh
+		await system.mesh.start();
 
 		// set up dependencies - assign to global variable to remain in scope for application lifetime
 		system.deps = system.container.registerDependencies();
 
-		try {
-			//start the mesh
-			await system.mesh.start();
+		// start the main app
+		await system.app.start(system.deps);
+		system.appStarted = true;
 
-			// start the main app
-			await system.app.start(system.deps);
-			system.appStarted = true;
-
-			// initialise the client facade
-			await system.mesh.exchange.clientFacade.initialise(system.deps);
-		} catch (err) {
-			console.error(err.stack || err.toString());
-			process.exit(2);
-		}
-	});
+		// initialise facades
+		await system.mesh.exchange.clientFacade.initialise(system.deps);
+	} catch (err) {
+		console.error(err.stack || err.toString());
+		process.exit(1);
+	}
 };
 
 server();

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "happner-demo-client/index.js",
+  "private": true,
   "scripts": {
     "test": "echo \\\\\\\"Error: no happner-demo-client/test specified\\\\\\\" && exit 1"
   },
