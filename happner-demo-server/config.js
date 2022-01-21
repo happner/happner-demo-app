@@ -4,7 +4,6 @@ module.exports = {
 	name: "DEMO-SERVER",
 	authorityDelegationOn: true,
 	happn: {
-		//host: "0.0.0.0",
 		port: 55000,
 		setOptions: {
 			timeout: 30000,
@@ -32,15 +31,19 @@ module.exports = {
 				},
 			},
 		},
-		endpoints: {},
-		modules: {
-			clientFacade: {
-				path: `${__dirname}/lib/facades/client-facade.js`,
-			},
+	},
+	endpoints: {},
+	modules: {
+		clientFacade: {
+			path: `${__dirname}/lib/facades/client-facade.js`,
 		},
-		components: {
-			clientFacade: {},
-			data: {},
+		eventBus: {
+			path: `${__dirname}/lib/buses/event-bus.js`,
 		},
+	},
+	components: {
+		clientFacade: {},
+		eventBus: {},
+		data: {},
 	},
 };

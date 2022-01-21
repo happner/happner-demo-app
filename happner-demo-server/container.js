@@ -1,7 +1,7 @@
-/* eslint-disable no-unused-vars */
-const config = require("./config");
 const MeshGateway = require("./lib/gateways/mesh-gateway");
 const ClientFactory = require("./lib/factories/client-factory");
+const MessageService = require("./lib/services/message-service");
+const MessageRepository = require("./lib/repositories/message-repository");
 
 module.exports = class Container {
 	#meshApi;
@@ -15,11 +15,14 @@ module.exports = class Container {
 	registerDependencies() {
 		const { log } = this.#meshApi;
 
-		// let clientFactory = new ClientFactory();
-		// let meshGateway = new MeshGateway(log, this.#meshApi, clientFactory);
+		let clientFactory = new ClientFactory();
+		let meshGateway = new MeshGateway(log, this.#meshApi, clientFactory);
+		let messageRepository = new MessageRepository(log, meshGateway);
+		let messageService = new MessageService(meshGateway, messageRepository);
 
-		// this.#dependencies["logger"] = log;
-		// this.#dependencies["meshGateway"] = meshGateway;
+		this.#dependencies["logger"] = log;
+		this.#dependencies["meshGateway"] = meshGateway;
+		this.#dependencies["messageService"] = messageService;
 
 		return this.#dependencies;
 	}

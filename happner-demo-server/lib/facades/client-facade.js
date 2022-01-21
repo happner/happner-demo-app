@@ -1,23 +1,14 @@
-/* eslint-disable no-unused-vars */
-// const BaseFacade = require("./base-facade");
-
 module.exports = class ClientFacade {
-	//extends BaseFacade {
+	#dependencies;
 
-	constructor() {
-		// super();
-	}
-
-	static create() {
-		return new ClientFacade();
-	}
+	constructor() {}
 
 	async initialise(dependencies) {
-		this.dependencies = dependencies;
+		this.#dependencies = dependencies;
 	}
 
 	/* Methods exposed to the outside world... */
 	async sendMessage(user, msg) {
-		console.log(`Message ${msg} received for ${user}!`);
+		await this.#dependencies.messageService.sendMessage(user, msg);
 	}
 };

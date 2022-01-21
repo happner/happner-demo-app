@@ -3,7 +3,6 @@ const ServiceTypes = require("../constants/service-type");
 /***
  * This class is used as a gateway/abstraction to the Happner mesh. The intention is to shield
  * developers from having to understand how the mesh works
- * @type {MeshGateway}
  */
 
 module.exports = class MeshGateway {

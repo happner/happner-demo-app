@@ -1,163 +1,184 @@
 <html>
 
 <head>
-    <script src="http://localhost:55000/api/client"></script>
+  <script src="http://localhost:55000/api/client"></script>
 
-    <script>
+  <script>
 
-        let client = null;
-        let username = null;
-        let timer = null;
-        let currentCookie = null;
-        let status = "logged_out";
-        let url = new URL(window.location.href);
-        let redirectUrl = url.searchParams.get("redirectUrl");
+    let client = null;
+    let username = null;
+    let timer = null;
+    let currentCookie = null;
+    let status = "logged_out";
+    let url = new URL(window.location.href);
+    let redirectUrl = url.searchParams.get("redirectUrl");
 
-        function loadClient() {
+    function loadClient() {
 
-            // create a mesh client instance - the mesh client is retrieved from the server via the script tag above...
-            client = new Happner.MeshClient({
-                secure: true,
-                host: "localhost",
-                port: 55000
-            });
+      // create a mesh client instance - the mesh client is retrieved from the server via the script tag above...
+      client = new Happner.MeshClient({
+        secure: true,
+        host: "localhost",
+        port: 55000
+      });
 
-            setTimer();
+      client.on("login/allow", function() {
+
+        console.log("Connection successful!");
+
+        if (username === null) {
+          username = localStorage.getItem("username");
         }
 
-        function setTimer() {
+        console.log(`Subscribing to messages on "MESSAGE_EVENT/users/${username}/messages/*"`);
 
-            timer = setInterval(async () => {
+        // subscribe to events
+        client.event.eventBus.on(
+          `MESSAGE_EVENT/users/${username}/messages/*`,
+          messageReceived
+        );
+      });
+      setTimer();
+    }
 
-                currentCookie = getCookie("happn_token");
+    function setTimer() {
 
-                if (status === "logged_out" && currentCookie.length > 0) {
-                    clearInterval(timer);
+      timer = setInterval(async () => {
 
-                    if (redirectUrl != null && redirectUrl.length > 0) {
-                        location.href = redirectUrl;
-                    } else {
-                        await reconnect();
-                    }
-                }
-            }, 1000);
+        currentCookie = getCookie("happn_token");
+
+        if (status === "logged_out" && currentCookie.length > 0) {
+          clearInterval(timer);
+
+          if (redirectUrl != null && redirectUrl.length > 0) {
+            location.href = redirectUrl;
+          } else {
+            await reconnect();
+          }
+        }
+      }, 1000);
+    }
+
+    function getCookie(cname) {
+
+      const name = `${cname}=`;
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const ca = decodedCookie.split(";");
+
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+
+        while (c.charAt(0) === " ") {
+          c = c.substring(1);
         }
 
-        function getCookie(cname) {
+        if (c.indexOf(name) === 0)
+          return c.substring(name.length, c.length);
 
-            const name = `${cname}=`;
-            const decodedCookie = decodeURIComponent(document.cookie);
-            const ca = decodedCookie.split(';');
+      }
+      return "";
+    }
 
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
+    async function login() {
 
-                while (c.charAt(0) === ' ') {
-                    c = c.substring(1);
-                }
+      try {
+        username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
 
-                if (c.indexOf(name) === 0)
-                    return c.substring(name.length, c.length);
+        await client.login({ username, password });
 
-            }
-            return "";
+        status = "logged_in";
+
+        console.log("LOGGED IN!");
+
+        if (redirectUrl != null) {
+          console.log("Redirecting....");
+          location.href = redirectUrl;
         }
 
-        async function login() {
+      } catch (err) {
+        console.log(err);
+      }
+    }
 
-            try {
-                username = document.getElementById('username').value;
-                let password = document.getElementById('password').value;
+    async function disconnect() {
 
-                await client.login({username, password});
+      try {
+        await client.disconnect({ deleteCookie: true });
+        status = "logged_out";
+        console.log("DISCONNECTED AND COOKIE DELETED!");
+      } catch (err) {
+        console.log(err);
+        alert(err);
+      }
+    }
 
-                status = "logged_in";
+    async function reconnect() {
 
-                console.log("LOGGED IN!");
+      try {
+        await client.login({ username: username, useCookie: true });
+        status = "logged_in";
+        console.log("RECONNECTED!");
+        setTimer();
+      } catch (err) {
+        console.log(err);
+        alert(err);
+      }
+    }
 
-                if (redirectUrl != null) {
-                    console.log("Redirecting....");
-                    location.href = redirectUrl;
-                }
+    async function sendMessage() {
+      try {
+        let targetUser = document.getElementById("targetUser").value;
+        let targetMessage = document.getElementById("targetMessage").value;
 
-            } catch (err) {
-                console.log(err);
-            }
+        try {
+          await client.exchange.clientFacade.sendMessage(targetUser, targetMessage);
+
+        } catch (err) {
+          console.log(err);
         }
+      } catch (err) {
+        console.log(err);
+      }
+    }
 
-        async function disconnect() {
+    function messageReceived(msg) {
+      console.log(JSON.stringify(msg));
+      let messageList = document.getElementById("messageList");
+      messageList.innerHTML = `${messageList.innerHTML}<li>From: ${msg.user} - '${msg.msg}' (${msg.createdAt})</li>`;
+    }
 
-            try {
-                await client.disconnect({deleteCookie: true});
-                status = "logged_out";
-                console.log("DISCONNECTED AND COOKIE DELETED!");
-            } catch (err) {
-                console.log(err);
-                alert(err);
-            }
-        }
-
-        async function reconnect() {
-
-            try {
-                await client.login({username: username, useCookie: true});
-                status = "logged_in";
-                console.log("RECONNECTED!");
-                setTimer();
-            } catch (err) {
-                console.log(err);
-                alert(err);
-            }
-        }
-
-        async function sendMessage() {
-            try {
-                let targetUser = document.getElementById('targetUser').value;
-                let targetMessage = document.getElementById('targetMessage').value;
-                let messageList = document.getElementById('messageList');
-
-                try {
-                    await client.exchange.clientFacade.sendMessage(targetUser, targetMessage);
-                    messageList.innerHTML = messageList.innerHTML + "<li>" + targetMessage + "</li>";
-                } catch (err) {
-                    console.log(err);
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        }
-
-    </script>
+  </script>
 </head>
 
 <body onload="loadClient()">
 <div>
-    <div>
-        <h3>Login</h3>
-        <input type="text" id="username"/>
-        <input type="password" id="password"/>
-        <input type="button" value="login" onclick="login()"/>
-        <input type="button" onclick="disconnect()" value="logout"/>
-    </div>
+  <div>
+    <h3>Login</h3>
+    <input type="text" id="username" />
+    <input type="password" id="password" />
+    <input type="button" value="login" onclick="login()" />
+    <input type="button" onclick="disconnect()" value="logout" />
+  </div>
 
-    <br/>
-    <hr/>
+  <br />
+  <hr />
 
-    <div id="messageDiv">
-        <h3> Messages</h3>
-        Send a message:
-        <p>
-            To: <input type="text" id="targetUser"/>
-            Message: <input type="text" id="targetMessage"/>
-            <input type="button" value="send" onclick="sendMessage()"/>
-        </p>
-        <p>
-            History:
-        <p id="messageHistory">
-            <ul id="messageList"></ul>
-        </p>
-        <div></div>
-    </div>
+  <div id="messageDiv">
+    <h3> Messages</h3>
+    Send a message:
+    <p>
+      To: <input type="text" id="targetUser" />
+      Message: <input type="text" id="targetMessage" />
+      <input type="button" value="send" onclick="sendMessage()" />
+    </p>
+    <p>
+      History:
+    <p id="messageHistory">
+    <ul id="messageList"></ul>
+    </p>
+    <div></div>
+  </div>
 </div>
 </body>
 
